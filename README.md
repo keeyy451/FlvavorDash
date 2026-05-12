@@ -1,17 +1,17 @@
-# 🍕 FlavorDash: Premium Food Catalog & Secure Authentication
+#  FlavorDash: Premium Food Catalog & Secure Authentication
 > **Proyek Ujian Tengah Semester (UTS) - Pemrograman Mobile**
 > **Program Studi Informatika | Semester 6**
 
 ---
 
-## 📄 Ringkasan Proyek
+##  Ringkasan Proyek
 FlavorDash adalah aplikasi katalog makanan berbasis **React Native** yang dirancang untuk mendemonstrasikan penguasaan dalam dua aspek krusial pengembangan mobile: **Desain Layout Responsif** yang adaptif terhadap fragmentasi perangkat, serta **Arsitektur Keamanan Stateless** menggunakan teknologi JWT (JSON Web Token) dengan middleware pada Expo Router.
 
 ---
 
-## 🛠️ Implementasi Teknis & Analisis Soal
+##  Implementasi Teknis & Analisis Soal
 
-### [SOAL 1] Desain Layout & Analisis Responsivitas (Bobot 45%)
+###  Desain Layout & Analisis Responsivitas
 
 #### A. Arsitektur Flexbox Row
 Implementasi pada komponen `ProductCard.js` mengadopsi prinsip **Flexbox Grid**. Sesuai dengan instruksi, struktur kode menggunakan `flexDirection: 'row'` untuk memastikan entitas visual (gambar) dan entitas informasi (teks/deskripsi) berada dalam satu sumbu horizontal.
@@ -30,7 +30,7 @@ Implementasi pada komponen `ProductCard.js` mengadopsi prinsip **Flexbox Grid**.
 
 ---
 
-### [SOAL 2] Keamanan Stateless & Arsitektur Middleware (Bobot 55%)
+###  Keamanan Stateless & Arsitektur Middleware 
 
 #### A. Implementasi Route Protection & Middleware
 Proyek ini mengimplementasikan **Stateless Authentication** yang diintegrasikan ke dalam sistem routing *Expo Router*.
@@ -51,7 +51,7 @@ Dalam pengembangan aplikasi skala besar (enterprise), metode **Stateless (JWT)**
 
 ---
 
-## ⚙️ Stack Teknologi
+##  Stack Teknologi
 - **Framework**: React Native (Expo SDK 54.0.0)
 - **State Management**: React Context API (Auth Provider)
 - **Animation Engine**: React Native Reanimated (Spring physics-based)
@@ -60,7 +60,7 @@ Dalam pengembangan aplikasi skala besar (enterprise), metode **Stateless (JWT)**
 
 ---
 
-## 🚀 Instalasi & Pengoperasian
+##  Instalasi & Pengoperasian
 1. **Clone & Install**:
    ```bash
    git clone https://github.com/keeyy451/FlvavorDash.git
@@ -73,4 +73,4 @@ Dalam pengembangan aplikasi skala besar (enterprise), metode **Stateless (JWT)**
    ```
 
 ---
-**FlavorDash Project** - *Dikerjakan untuk memenuhi standar kompetensi Pemrograman Mobile Semester 6.*
+**FlavorDash Project** - 
