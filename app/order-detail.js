@@ -5,7 +5,6 @@ import {
   useWindowDimensions,
 } from 'react-native';
 import { useRouter, useLocalSearchParams } from 'expo-router';
-import Animated, { FadeIn, FadeInDown, FadeInRight } from 'react-native-reanimated';
 import { Ionicons } from '@expo/vector-icons';
 import { useAuth } from '../context/AuthContext';
 import ProtectedRoute from '../components/ProtectedRoute';
@@ -14,8 +13,7 @@ import products from '../data/products';
 import { COLORS, SPACING, RADIUS, SHADOWS, TYPOGRAPHY } from '../constants/Theme';
 
 /**
- * SOAL 2: Implementasi Middleware & Route Protection
- * Halaman ini dilindungi oleh ProtectedRoute yang menjalankan pipeline JWT.
+ * SOAL 2: Implementasi Middleware & Route Protection (Stable Version)
  */
 function OrderDetailContent() {
   const router = useRouter();
@@ -43,22 +41,22 @@ function OrderDetailContent() {
       <ScrollView showsVerticalScrollIndicator={false} contentContainerStyle={[styles.scrollContent, isWeb && styles.webScrollContent]}>
         
         {/* Header */}
-        <Animated.View entering={FadeInDown.duration(600)} style={styles.header}>
+        <View style={styles.header}>
           <TouchableOpacity style={styles.backButton} onPress={() => router.back()}>
             <Ionicons name="chevron-back" size={24} color={COLORS.text} />
           </TouchableOpacity>
           <Text style={styles.headerTitle}>Detail Pesanan</Text>
           <View style={{ width: 40 }} />
-        </Animated.View>
+        </View>
 
         <View style={isWeb ? styles.webLayout : styles.mobileLayout}>
           <View style={isWeb ? styles.mainColumn : null}>
             {/* Image & Main Info */}
-            <Animated.View entering={FadeIn.delay(200)} style={styles.imageContainer}>
+            <View style={styles.imageContainer}>
               <Image source={{ uri: product.image }} style={styles.productImage} resizeMode="cover" />
-            </Animated.View>
+            </View>
 
-            <Animated.View entering={FadeInDown.delay(400)} style={styles.infoCard}>
+            <View style={styles.infoCard}>
               <Text style={styles.productName}>{product.name}</Text>
               <View style={styles.ratingRow}>
                 <Ionicons name="star" size={16} color={COLORS.accent} />
@@ -66,12 +64,12 @@ function OrderDetailContent() {
               </View>
               <Text style={styles.priceTag}>{formatPrice(product.price)}</Text>
               <Text style={styles.description}>{product.description}</Text>
-            </Animated.View>
+            </View>
           </View>
 
           <View style={isWeb ? styles.sideColumn : null}>
             {/* Security / Middleware Section */}
-            <Animated.View entering={FadeInRight.delay(600)} style={styles.securityCard}>
+            <View style={styles.securityCard}>
               <View style={styles.securityHeader}>
                 <Ionicons name="shield-checkmark" size={24} color={COLORS.success} />
                 <Text style={styles.securityTitle}>JWT Secured Session</Text>
@@ -86,10 +84,10 @@ function OrderDetailContent() {
                   </View>
                 ))}
               </View>
-            </Animated.View>
+            </View>
 
             {/* THEORY ANALYSIS SECTION (FOR SOAL 1 & 2 RUBRIC) */}
-            <Animated.View entering={FadeInRight.delay(800)} style={styles.analysisCard}>
+            <View style={styles.analysisCard}>
               <TouchableOpacity 
                 style={styles.analysisHeader} 
                 onPress={() => setShowAnalysis(!showAnalysis)}
@@ -103,26 +101,19 @@ function OrderDetailContent() {
                 <View style={styles.analysisBody}>
                   <Text style={styles.theoryHeading}>1. Analisis Responsivitas (Soal 1)</Text>
                   <Text style={styles.theoryText}>
-                    Penggunaan unit proporsional (flex: 1 atau %) lebih disarankan daripada unit absolut (pixel) karena perangkat mobile memiliki "fragmentasi layar" (ukuran & resolusi berbeda-beda). Dengan Flexbox, layout akan beradaptasi secara dinamis; elemen akan mengisi ruang yang tersedia secara proporsional, memastikan tidak ada elemen yang terpotong (overflow) baik di Android maupun iOS.
+                    Penggunaan unit proporsional (flex) lebih disarankan daripada unit absolut (pixel) karena perangkat mobile memiliki fragmentasi layar. Dengan Flexbox, layout akan beradaptasi secara dinamis di Android maupun iOS.
                   </Text>
 
                   <Text style={styles.theoryHeading}>2. Analisis Keamanan Stateless (Soal 2)</Text>
                   <Text style={styles.theoryText}>
-                    Sistem Stateful menyimpan sesi di server (Database/RAM), yang sulit di-scale untuk jutaan pengguna. Sistem Stateless (JWT) menyimpan data autentikasi di client. Server tidak perlu menyimpan state, cukup memverifikasi "Signature" token. Ini jauh lebih efisien untuk aplikasi skala besar karena mengurangi beban I/O server secara signifikan.
-                  </Text>
-
-                  <Text style={styles.theoryHeading}>3. Anatomi JWT</Text>
-                  <Text style={styles.theoryText}>
-                    • Header: Algoritma & tipe token.{"\n"}
-                    • Payload: Data user (id, name, exp).{"\n"}
-                    • Signature: Hasil hashing Header + Payload untuk validitas.
+                    Sistem Stateless (JWT) menyimpan data autentikasi di client, bukan server. Ini jauh lebih efisien untuk aplikasi skala besar karena mengurangi beban I/O server.
                   </Text>
                 </View>
               )}
-            </Animated.View>
+            </View>
 
             {/* Total Section */}
-            <Animated.View entering={FadeInRight.delay(1000)} style={styles.summaryCard}>
+            <View style={styles.summaryCard}>
               <View style={styles.summaryRow}>
                 <Text style={styles.totalLabel}>Total</Text>
                 <Text style={styles.totalValue}>{formatPrice(totalPrice)}</Text>
@@ -133,7 +124,7 @@ function OrderDetailContent() {
               >
                 <Text style={styles.confirmButtonText}>Konfirmasi Pesanan</Text>
               </TouchableOpacity>
-            </Animated.View>
+            </View>
           </View>
         </View>
 

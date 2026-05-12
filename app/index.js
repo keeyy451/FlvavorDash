@@ -11,10 +11,6 @@ import {
   StatusBar,
 } from 'react-native';
 import { useRouter } from 'expo-router';
-import Animated, { 
-  FadeInDown, 
-  FadeInRight, 
-} from 'react-native-reanimated';
 import { Ionicons } from '@expo/vector-icons';
 import { useAuth } from '../context/AuthContext';
 import ProductCard from '../components/ProductCard';
@@ -27,7 +23,6 @@ export default function CatalogScreen() {
   const [selectedCategory, setSelectedCategory] = useState('Semua');
   const { width } = useWindowDimensions();
 
-  // Optimized for horizontal cards (Soal 1)
   const { numColumns, horizontalPadding } = useMemo(() => {
     if (width > 900) return { numColumns: 2, horizontalPadding: width * 0.1 };
     return { numColumns: 1, horizontalPadding: SPACING.lg };
@@ -51,7 +46,7 @@ export default function CatalogScreen() {
 
   const renderHeader = () => (
     <View style={styles.headerContainer}>
-      <Animated.View entering={FadeInDown.duration(800)} style={styles.topBar}>
+      <View style={styles.topBar}>
         <View style={styles.brandContainer}>
           <View style={styles.logoCircle}>
             <Ionicons name="flash" size={24} color={COLORS.primary} />
@@ -74,9 +69,9 @@ export default function CatalogScreen() {
           />
           <Text style={styles.authButtonText}>{isAuthenticated ? 'Logout' : 'Login'}</Text>
         </TouchableOpacity>
-      </Animated.View>
+      </View>
 
-      <Animated.View entering={FadeInDown.delay(200)} style={styles.heroWrapper}>
+      <View style={styles.heroWrapper}>
         <ImageBackground
           source={{ uri: 'https://images.unsplash.com/photo-1504674900247-0877df9cc836?q=80&w=2070&auto=format&fit=crop' }}
           style={styles.heroBackground}
@@ -90,7 +85,7 @@ export default function CatalogScreen() {
             </View>
           </View>
         </ImageBackground>
-      </Animated.View>
+      </View>
 
       <View style={styles.categoryWrapper}>
         <FlatList
@@ -98,17 +93,15 @@ export default function CatalogScreen() {
           showsHorizontalScrollIndicator={false}
           data={categories}
           keyExtractor={(item) => item}
-          renderItem={({ item, index }) => (
-            <Animated.View entering={FadeInRight.delay(300 + (index * 100))}>
-              <TouchableOpacity
-                style={[styles.categoryChip, selectedCategory === item && styles.categoryChipActive]}
-                onPress={() => setSelectedCategory(item)}
-              >
-                <Text style={[styles.categoryChipText, selectedCategory === item && styles.categoryChipTextActive]}>
-                  {item}
-                </Text>
-              </TouchableOpacity>
-            </Animated.View>
+          renderItem={({ item }) => (
+            <TouchableOpacity
+              style={[styles.categoryChip, selectedCategory === item && styles.categoryChipActive]}
+              onPress={() => setSelectedCategory(item)}
+            >
+              <Text style={[styles.categoryChipText, selectedCategory === item && styles.categoryChipTextActive]}>
+                {item}
+              </Text>
+            </TouchableOpacity>
           )}
         />
       </View>
@@ -123,13 +116,10 @@ export default function CatalogScreen() {
         numColumns={numColumns}
         data={filteredProducts}
         keyExtractor={(item) => item.id}
-        renderItem={({ item, index }) => (
-          <Animated.View 
-            entering={FadeInDown.delay(400 + (index * 50))}
-            style={{ flex: 1, paddingHorizontal: 4 }}
-          >
+        renderItem={({ item }) => (
+          <View style={{ flex: 1, paddingHorizontal: 4 }}>
             <ProductCard product={item} onPress={handleProductPress} />
-          </Animated.View>
+          </View>
         )}
         ListHeaderComponent={renderHeader}
         ListFooterComponent={<View style={{ height: 40 }} />}

@@ -6,47 +6,23 @@ import {
   StyleSheet,
   TouchableOpacity,
 } from 'react-native';
-import Animated, { 
-  useSharedValue, 
-  useAnimatedStyle, 
-  withSpring 
-} from 'react-native-reanimated';
 import { Ionicons } from '@expo/vector-icons';
 import { COLORS, SPACING, RADIUS, SHADOWS, TYPOGRAPHY } from '../constants/Theme';
 
 /**
- * SOAL 1: Implementasi Flexbox Row
- * Gambar berada di samping deskripsi secara proporsional.
+ * SOAL 1: Implementasi Flexbox Row (Stable Version)
  */
 export default function ProductCard({ product, onPress }) {
-  const scale = useSharedValue(1);
-
-  const animatedStyle = useAnimatedStyle(() => ({
-    transform: [{ scale: scale.value }],
-  }));
-
-  const handlePressIn = () => {
-    scale.value = withSpring(0.98);
-  };
-
-  const handlePressOut = () => {
-    scale.value = withSpring(1);
-  };
-
   if (!product) return null;
 
   return (
-    <Animated.View style={[styles.container, animatedStyle]}>
+    <View style={styles.container}>
       <TouchableOpacity
-        activeOpacity={1}
+        activeOpacity={0.7}
         onPress={() => onPress && onPress(product)}
-        onPressIn={handlePressIn}
-        onPressOut={handlePressOut}
         style={styles.touchable}
       >
-        {/* Flexbox Row Container */}
         <View style={styles.row}>
-          {/* Sisi Kiri: Gambar (Flex 1) */}
           <View style={styles.imageWrapper}>
             <Image 
               source={{ uri: product.image }} 
@@ -58,7 +34,6 @@ export default function ProductCard({ product, onPress }) {
             </View>
           </View>
 
-          {/* Sisi Kanan: Deskripsi (Flex 1.5) */}
           <View style={styles.content}>
             <View style={styles.ratingRow}>
               <Ionicons name="star" size={12} color={COLORS.accent} />
@@ -80,7 +55,7 @@ export default function ProductCard({ product, onPress }) {
           </View>
         </View>
       </TouchableOpacity>
-    </Animated.View>
+    </View>
   );
 }
 
@@ -98,11 +73,11 @@ const styles = StyleSheet.create({
     padding: 10,
   },
   row: {
-    flexDirection: 'row', // Sesuai Soal 1: Row Layout
+    flexDirection: 'row',
     alignItems: 'center',
   },
   imageWrapper: {
-    flex: 1, // Proporsional sisi kiri
+    flex: 1,
     height: 110,
     borderRadius: RADIUS.md,
     overflow: 'hidden',
@@ -128,7 +103,7 @@ const styles = StyleSheet.create({
     textTransform: 'uppercase',
   },
   content: {
-    flex: 1.5, // Proporsional sisi kanan (lebih lebar untuk teks)
+    flex: 1.5,
     paddingLeft: SPACING.md,
     justifyContent: 'center',
   },
