@@ -50,6 +50,25 @@ Aplikasi menyediakan tombol login cepat (Demo) untuk dua role:
 - **Demo Customer**: Untuk melihat katalog dan memesan makanan.
 - **Demo Driver**: Untuk melihat daftar pesanan aktif dan menyelesaikannya dengan foto bukti.
 
+### 🎬 Panduan Demo Aplikasi (Skenario UAS)
+Untuk mengetes seluruh fitur secara utuh, Anda bisa mengikuti langkah berikut:
+
+**1. Skenario Customer (Pemesan)**
+- Buka aplikasi dan tekan tombol **Login**.
+- Pilih **Demo Customer** lalu klik **Masuk Sekarang**.
+- Gulir katalog makanan (responsif dengan *Flexbox*), lalu klik salah satu makanan (misal: Sate Ayam Madura).
+- Di halaman Detail Pesanan, Anda akan melihat **Peta Lokasi Restoran**.
+- Tekan **Pesan Sekarang**, lalu tutup pop-up berhasil, dan tekan **Logout**.
+
+**2. Skenario Driver (Kurir)**
+- Tekan tombol **Login** lagi, pilih **Demo Driver**, dan klik **Masuk Sekarang**.
+- Tampilan berubah menjadi **Driver Dashboard**. Anda akan melihat pesanan "Sate Ayam Madura" yang tadi dibuat oleh Customer (*State tersinkronisasi!*).
+- Klik pesanan tersebut. Anda akan masuk ke halaman Detail Pesanan versi Driver.
+- Teks Peta berubah menjadi **Lokasi Pengiriman**, dan muncul tombol **Ambil Foto Bukti**.
+- Coba selesaikan pengiriman tanpa memotret (aplikasi akan menolak).
+- Tekan tombol kamera, ambil foto, lalu klik **Selesaikan Pengiriman**.
+- Pesanan berhasil diantar dan otomatis hilang dari daftar pesanan aktif!
+
 ---
 
 ##  Struktur Proyek
