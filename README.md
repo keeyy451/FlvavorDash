@@ -50,8 +50,8 @@ Aplikasi menyediakan tombol login cepat (Demo) untuk dua role:
 - **Demo Customer**: Untuk melihat katalog dan memesan makanan.
 - **Demo Driver**: Untuk melihat daftar pesanan aktif dan menyelesaikannya dengan foto bukti.
 
-### 🎬 Panduan Demo Aplikasi (Skenario UAS)
-Untuk mengetes seluruh fitur secara utuh, Anda bisa mengikuti langkah berikut:
+###  Panduan Demo Aplikasi (Skenario UAS)
+Untuk mengetes seluruh fitur secara utuh, bisa mengikuti langkah berikut:
 
 **1. Skenario Customer (Pemesan)**
 - Buka aplikasi dan tekan tombol **Login**.
