@@ -81,9 +81,9 @@ export default function CatalogScreen() {
         >
           <View style={styles.heroOverlay}>
             <Text style={styles.heroTitle}>Katalog Makanan{'\n'}Terbaik Untukmu</Text>
-            <View style={styles.theoryBadge}>
-              <Ionicons name="school-outline" size={12} color={COLORS.accent} />
-              <Text style={styles.theoryText}>Analisis Responsivitas Aktif</Text>
+            <View style={styles.promoBadge}>
+              <Ionicons name="star" size={12} color={COLORS.accent} />
+              <Text style={styles.promoText}>Pilihan Teratas</Text>
             </View>
           </View>
         </ImageBackground>
@@ -152,8 +152,8 @@ const styles = StyleSheet.create({
   heroBackground: { height: 160, overflow: 'hidden', borderRadius: RADIUS.lg },
   heroOverlay: { flex: 1, backgroundColor: 'rgba(0,0,0,0.5)', padding: SPACING.lg, justifyContent: 'center' },
   heroTitle: { ...TYPOGRAPHY.h2, color: COLORS.text },
-  theoryBadge: { flexDirection: 'row', alignItems: 'center', marginTop: 8, backgroundColor: 'rgba(0,0,0,0.3)', alignSelf: 'flex-start', paddingHorizontal: 8, paddingVertical: 4, borderRadius: 4 },
-  theoryText: { color: COLORS.accent, fontSize: 10, fontWeight: '700', marginLeft: 4 },
+  promoBadge: { flexDirection: 'row', alignItems: 'center', marginTop: 8, backgroundColor: 'rgba(0,0,0,0.3)', alignSelf: 'flex-start', paddingHorizontal: 8, paddingVertical: 4, borderRadius: 4 },
+  promoText: { color: COLORS.accent, fontSize: 10, fontWeight: '700', marginLeft: 4 },
   categoryWrapper: { marginBottom: SPACING.sm },
   categoryChip: { paddingHorizontal: 20, paddingVertical: 10, borderRadius: RADIUS.md, backgroundColor: COLORS.surface, marginRight: 10, borderWidth: 1, borderColor: COLORS.glassBorder },
   categoryChipActive: { backgroundColor: COLORS.primary, borderColor: COLORS.primary },

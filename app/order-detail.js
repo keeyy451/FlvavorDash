@@ -19,7 +19,6 @@ function OrderDetailContent() {
   const params = useLocalSearchParams();
   const { user, token } = useAuth();
   const [quantity, setQuantity] = useState(1);
-  const [showAnalysis, setShowAnalysis] = useState(false);
   const { width } = useWindowDimensions();
 
   // Camera State
@@ -165,31 +164,6 @@ function OrderDetailContent() {
               </View>
             </View>
 
-            {/* THEORY ANALYSIS SECTION */}
-            <View style={styles.analysisCard}>
-              <TouchableOpacity 
-                style={styles.analysisHeader} 
-                onPress={() => setShowAnalysis(!showAnalysis)}
-              >
-                <Ionicons name="book" size={20} color={COLORS.accent} />
-                <Text style={styles.analysisTitle}>Analisis Jawaban (Soal 1 & 2)</Text>
-                <Ionicons name={showAnalysis ? "chevron-up" : "chevron-down"} size={20} color={COLORS.accent} />
-              </TouchableOpacity>
-
-              {showAnalysis && (
-                <View style={styles.analysisBody}>
-                  <Text style={styles.theoryHeading}>1. Analisis Responsivitas</Text>
-                  <Text style={styles.theoryText}>
-                    Penggunaan unit proporsional (flex) lebih disarankan daripada unit absolut (pixel) karena perangkat mobile memiliki fragmentasi layar.
-                  </Text>
-
-                  <Text style={styles.theoryHeading}>2. Analisis Keamanan Stateless</Text>
-                  <Text style={styles.theoryText}>
-                    Sistem Stateless (JWT) menyimpan data autentikasi di client, bukan server. Ini efisien untuk aplikasi besar.
-                  </Text>
-                </View>
-              )}
-            </View>
 
             {/* Total Section */}
             <View style={styles.summaryCard}>
@@ -324,12 +298,7 @@ const styles = StyleSheet.create({
   pipelineBox: { backgroundColor: 'rgba(0,0,0,0.1)', padding: 10, borderRadius: 8 },
   stepItem: { flexDirection: 'row', alignItems: 'center', marginBottom: 4 },
   stepText: { color: COLORS.textSecondary, fontSize: 11, marginLeft: 8 },
-  analysisCard: { backgroundColor: COLORS.surface, borderRadius: 15, padding: 15, marginBottom: 20, borderWidth: 1, borderColor: COLORS.accent },
-  analysisHeader: { flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center' },
-  analysisTitle: { color: COLORS.accent, fontWeight: '800', fontSize: 13 },
-  analysisBody: { marginTop: 15, borderTopWidth: 1, borderTopColor: COLORS.glassBorder, paddingTop: 10 },
-  theoryHeading: { color: COLORS.text, fontWeight: '800', fontSize: 12, marginTop: 10, marginBottom: 4 },
-  theoryText: { color: COLORS.textSecondary, fontSize: 11, lineHeight: 16 },
+
   summaryCard: { backgroundColor: COLORS.surface, padding: 20, borderRadius: 20, borderWidth: 1, borderColor: COLORS.glassBorder },
   summaryRow: { flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', marginBottom: 20 },
   totalLabel: { ...TYPOGRAPHY.h3, color: COLORS.text },
