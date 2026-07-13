@@ -27,6 +27,9 @@ function OrderDetailContent() {
   const [photoUri, setPhotoUri] = useState(null);
   const [permission, requestPermission] = useCameraPermissions();
   const cameraRef = useRef(null);
+  
+  // Order Success State
+  const [orderConfirmed, setOrderConfirmed] = useState(false);
 
   const product = products.find(p => p.id === params.productId) || products[0];
   const totalPrice = product.price * quantity;
@@ -64,7 +67,7 @@ function OrderDetailContent() {
       Alert.alert("Perhatian", "Harap ambil foto bukti penerimaan pesanan terlebih dahulu.");
       return;
     }
-    Alert.alert("Sukses", "Pesanan Anda sedang diproses!");
+    setOrderConfirmed(true);
   };
 
   return (
@@ -231,6 +234,40 @@ function OrderDetailContent() {
         </SafeAreaView>
       </Modal>
 
+      {/* Success Modal */}
+      <Modal visible={orderConfirmed} animationType="fade" transparent={true}>
+        <View style={styles.successModalOverlay}>
+          <View style={styles.successModalContent}>
+            <View style={styles.successIconCircle}>
+              <Ionicons name="checkmark-circle" size={80} color={COLORS.success} />
+            </View>
+            <Text style={styles.successTitle}>Pesanan Berhasil!</Text>
+            <Text style={styles.successSubtitle}>
+              Terima kasih, {user?.name}. Pesanan {product.name} Anda sedang diproses dan akan segera diantar.
+            </Text>
+            <View style={styles.successDetails}>
+              <View style={styles.successRow}>
+                <Text style={styles.successLabel}>Total Bayar</Text>
+                <Text style={styles.successValue}>{formatPrice(totalPrice)}</Text>
+              </View>
+              <View style={styles.successRow}>
+                <Text style={styles.successLabel}>Metode Pembayaran</Text>
+                <Text style={styles.successValue}>FlavorPay</Text>
+              </View>
+            </View>
+            <TouchableOpacity 
+              style={styles.backHomeButton} 
+              onPress={() => {
+                setOrderConfirmed(false);
+                router.replace('/');
+              }}
+            >
+              <Text style={styles.backHomeButtonText}>Kembali ke Katalog</Text>
+            </TouchableOpacity>
+          </View>
+        </View>
+      </Modal>
+
     </SafeAreaView>
   );
 }
@@ -299,4 +336,17 @@ const styles = StyleSheet.create({
   totalValue: { ...TYPOGRAPHY.h2, color: COLORS.primary },
   confirmButton: { backgroundColor: COLORS.primary, height: 50, borderRadius: 12, justifyContent: 'center', alignItems: 'center' },
   confirmButtonText: { color: COLORS.text, fontWeight: '900', fontSize: 16 },
+
+  // Success Modal Styles
+  successModalOverlay: { flex: 1, backgroundColor: 'rgba(0,0,0,0.8)', justifyContent: 'center', alignItems: 'center', padding: 20 },
+  successModalContent: { backgroundColor: COLORS.surface, width: '100%', maxWidth: 400, borderRadius: 24, padding: 30, alignItems: 'center', borderWidth: 1, borderColor: COLORS.glassBorder },
+  successIconCircle: { width: 100, height: 100, borderRadius: 50, backgroundColor: 'rgba(16, 185, 129, 0.1)', justifyContent: 'center', alignItems: 'center', marginBottom: 20 },
+  successTitle: { ...TYPOGRAPHY.h2, color: COLORS.success, marginBottom: 10, textAlign: 'center' },
+  successSubtitle: { color: COLORS.textSecondary, fontSize: 14, textAlign: 'center', lineHeight: 22, marginBottom: 30 },
+  successDetails: { width: '100%', backgroundColor: 'rgba(255,255,255,0.03)', borderRadius: 12, padding: 15, marginBottom: 30 },
+  successRow: { flexDirection: 'row', justifyContent: 'space-between', marginBottom: 10 },
+  successLabel: { color: COLORS.textSecondary, fontSize: 13 },
+  successValue: { color: COLORS.text, fontSize: 14, fontWeight: '700' },
+  backHomeButton: { backgroundColor: COLORS.primary, width: '100%', padding: 16, borderRadius: 12, alignItems: 'center' },
+  backHomeButtonText: { color: COLORS.text, fontSize: 16, fontWeight: '800' }
 });
