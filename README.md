@@ -1,11 +1,11 @@
-# 🍽️ FlavorDash — Aplikasi Katalog Makanan & Delivery
+#  FlavorDash — Aplikasi Katalog Makanan & Delivery
 
 > **Proyek Ujian Akhir Semester (UAS) — Pemrograman Mobile**
 > **Framework:** React Native (Expo) | **Bahasa:** JavaScript
 
 ---
 
-## 📋 Ringkasan Proyek
+##  Ringkasan Proyek
 
 FlavorDash adalah aplikasi katalog makanan berbasis **React Native (Expo)** yang mengimplementasikan empat fitur utama:
 
@@ -16,7 +16,7 @@ FlavorDash adalah aplikasi katalog makanan berbasis **React Native (Expo)** yang
 
 ---
 
-## 🚀 Cara Menjalankan Aplikasi
+##  Cara Menjalankan Aplikasi
 
 ### Prasyarat
 - **Node.js** versi 18 atau lebih baru
@@ -52,7 +52,7 @@ Password : password123
 
 ---
 
-## 📁 Struktur Proyek
+##  Struktur Proyek
 
 ```
 FlvavorDash/
@@ -315,7 +315,7 @@ Peta ditampilkan di halaman Detail Pesanan menunjukkan lokasi restoran:
 
 ---
 
-## 🛠️ Stack Teknologi
+##  Stack Teknologi
 
 | Teknologi | Versi | Kegunaan |
 |-----------|-------|----------|
@@ -329,7 +329,7 @@ Peta ditampilkan di halaman Detail Pesanan menunjukkan lokasi restoran:
 
 ---
 
-## 📱 Screenshot Fitur
+##  Screenshot Fitur
 
 ### Alur Penggunaan Aplikasi
 ```
@@ -349,7 +349,7 @@ Peta ditampilkan di halaman Detail Pesanan menunjukkan lokasi restoran:
 
 ---
 
-## 👤 Informasi Pengembang
+##  Informasi Pengembang
 
 **Repository:** [github.com/keeyy451/FlvavorDash](https://github.com/keeyy451/FlvavorDash)
 
