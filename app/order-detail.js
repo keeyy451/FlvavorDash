@@ -1,20 +1,19 @@
-import React, { useState } from 'react';
+import React, { useState, useRef } from 'react';
 import {
   View, Text, Image, StyleSheet, SafeAreaView,
   TouchableOpacity, ScrollView, Alert, StatusBar,
-  useWindowDimensions,
+  useWindowDimensions, Modal, Platform
 } from 'react-native';
 import { useRouter, useLocalSearchParams } from 'expo-router';
 import { Ionicons } from '@expo/vector-icons';
 import { useAuth } from '../context/AuthContext';
 import ProtectedRoute from '../components/ProtectedRoute';
-import { runMiddlewarePipeline, decodePayload } from '../utils/jwtMiddleware';
+import { runMiddlewarePipeline } from '../utils/jwtMiddleware';
 import products from '../data/products';
-import { COLORS, SPACING, RADIUS, SHADOWS, TYPOGRAPHY } from '../constants/Theme';
+import { COLORS, SPACING, RADIUS, TYPOGRAPHY } from '../constants/Theme';
+import { CameraView, useCameraPermissions } from 'expo-camera';
+import MapView, { Marker } from 'react-native-maps';
 
-/**
- * SOAL 2: Implementasi Middleware & Route Protection (Stable Version)
- */
 function OrderDetailContent() {
   const router = useRouter();
   const params = useLocalSearchParams();
@@ -22,6 +21,12 @@ function OrderDetailContent() {
   const [quantity, setQuantity] = useState(1);
   const [showAnalysis, setShowAnalysis] = useState(false);
   const { width } = useWindowDimensions();
+
+  // Camera State
+  const [showCamera, setShowCamera] = useState(false);
+  const [photoUri, setPhotoUri] = useState(null);
+  const [permission, requestPermission] = useCameraPermissions();
+  const cameraRef = useRef(null);
 
   const product = products.find(p => p.id === params.productId) || products[0];
   const totalPrice = product.price * quantity;
@@ -34,6 +39,33 @@ function OrderDetailContent() {
 
   const formatPrice = (p) => `Rp ${p.toLocaleString('id-ID')}`;
   const isWeb = width > 768;
+
+  const handleOpenCamera = async () => {
+    if (!permission?.granted) {
+      const { status } = await requestPermission();
+      if (status !== 'granted') {
+        Alert.alert("Izin Ditolak", "Anda memerlukan izin kamera untuk mengambil bukti penerimaan.");
+        return;
+      }
+    }
+    setShowCamera(true);
+  };
+
+  const takePicture = async () => {
+    if (cameraRef.current) {
+      const photo = await cameraRef.current.takePictureAsync();
+      setPhotoUri(photo.uri);
+      setShowCamera(false);
+    }
+  };
+
+  const confirmOrder = () => {
+    if (!photoUri) {
+      Alert.alert("Perhatian", "Harap ambil foto bukti penerimaan pesanan terlebih dahulu.");
+      return;
+    }
+    Alert.alert("Sukses", "Pesanan Anda sedang diproses!");
+  };
 
   return (
     <SafeAreaView style={styles.container}>
@@ -65,9 +97,53 @@ function OrderDetailContent() {
               <Text style={styles.priceTag}>{formatPrice(product.price)}</Text>
               <Text style={styles.description}>{product.description}</Text>
             </View>
+
+            {/* Map View */}
+            <View style={styles.mapContainer}>
+              <Text style={styles.sectionTitle}>Lokasi Restoran</Text>
+              <View style={styles.mapWrapper}>
+                {Platform.OS === 'web' ? (
+                  <View style={[styles.map, { justifyContent: 'center', alignItems: 'center', backgroundColor: COLORS.surface }]}>
+                    <Ionicons name="map" size={40} color={COLORS.textSecondary} />
+                    <Text style={{ color: COLORS.textSecondary, marginTop: 10 }}>Peta tidak didukung di versi Web</Text>
+                  </View>
+                ) : (
+                  <MapView 
+                    style={styles.map}
+                    initialRegion={{
+                      latitude: -6.2088,
+                      longitude: 106.8456,
+                      latitudeDelta: 0.05,
+                      longitudeDelta: 0.05,
+                    }}
+                  >
+                    <Marker coordinate={{ latitude: -6.2088, longitude: 106.8456 }} title={product.name} />
+                  </MapView>
+                )}
+              </View>
+            </View>
           </View>
 
           <View style={isWeb ? styles.sideColumn : null}>
+            {/* Camera / Proof Section */}
+            <View style={styles.cameraCard}>
+              <Text style={styles.sectionTitle}>Bukti Penerimaan</Text>
+              {photoUri ? (
+                <View style={styles.photoContainer}>
+                  <Image source={{ uri: photoUri }} style={styles.previewPhoto} />
+                  <TouchableOpacity style={styles.retakeButton} onPress={handleOpenCamera}>
+                    <Ionicons name="camera-reverse" size={20} color="#fff" />
+                    <Text style={styles.retakeText}>Ambil Ulang</Text>
+                  </TouchableOpacity>
+                </View>
+              ) : (
+                <TouchableOpacity style={styles.openCameraButton} onPress={handleOpenCamera}>
+                  <Ionicons name="camera" size={32} color={COLORS.primary} />
+                  <Text style={styles.openCameraText}>Ambil Foto Bukti</Text>
+                </TouchableOpacity>
+              )}
+            </View>
+
             {/* Security / Middleware Section */}
             <View style={styles.securityCard}>
               <View style={styles.securityHeader}>
@@ -86,7 +162,7 @@ function OrderDetailContent() {
               </View>
             </View>
 
-            {/* THEORY ANALYSIS SECTION (FOR SOAL 1 & 2 RUBRIC) */}
+            {/* THEORY ANALYSIS SECTION */}
             <View style={styles.analysisCard}>
               <TouchableOpacity 
                 style={styles.analysisHeader} 
@@ -99,14 +175,14 @@ function OrderDetailContent() {
 
               {showAnalysis && (
                 <View style={styles.analysisBody}>
-                  <Text style={styles.theoryHeading}>1. Analisis Responsivitas (Soal 1)</Text>
+                  <Text style={styles.theoryHeading}>1. Analisis Responsivitas</Text>
                   <Text style={styles.theoryText}>
-                    Penggunaan unit proporsional (flex) lebih disarankan daripada unit absolut (pixel) karena perangkat mobile memiliki fragmentasi layar. Dengan Flexbox, layout akan beradaptasi secara dinamis di Android maupun iOS.
+                    Penggunaan unit proporsional (flex) lebih disarankan daripada unit absolut (pixel) karena perangkat mobile memiliki fragmentasi layar.
                   </Text>
 
-                  <Text style={styles.theoryHeading}>2. Analisis Keamanan Stateless (Soal 2)</Text>
+                  <Text style={styles.theoryHeading}>2. Analisis Keamanan Stateless</Text>
                   <Text style={styles.theoryText}>
-                    Sistem Stateless (JWT) menyimpan data autentikasi di client, bukan server. Ini jauh lebih efisien untuk aplikasi skala besar karena mengurangi beban I/O server.
+                    Sistem Stateless (JWT) menyimpan data autentikasi di client, bukan server. Ini efisien untuk aplikasi besar.
                   </Text>
                 </View>
               )}
@@ -120,7 +196,7 @@ function OrderDetailContent() {
               </View>
               <TouchableOpacity 
                 style={styles.confirmButton}
-                onPress={() => Alert.alert("Sukses", "Pesanan Anda sedang diproses!")}
+                onPress={confirmOrder}
               >
                 <Text style={styles.confirmButtonText}>Konfirmasi Pesanan</Text>
               </TouchableOpacity>
@@ -129,6 +205,32 @@ function OrderDetailContent() {
         </View>
 
       </ScrollView>
+
+      {/* Camera Modal */}
+      <Modal visible={showCamera} animationType="slide">
+        <SafeAreaView style={{ flex: 1, backgroundColor: 'black' }}>
+          {Platform.OS === 'web' ? (
+             <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
+               <Text style={{ color: 'white', marginBottom: 20 }}>Kamera tidak didukung di versi Web</Text>
+               <TouchableOpacity style={styles.closeCameraButton} onPress={() => setShowCamera(false)}>
+                  <Ionicons name="close" size={30} color="white" />
+               </TouchableOpacity>
+             </View>
+          ) : (
+            <CameraView style={{ flex: 1 }} facing="back" ref={cameraRef}>
+              <View style={styles.cameraControls}>
+                <TouchableOpacity style={styles.closeCameraButton} onPress={() => setShowCamera(false)}>
+                  <Ionicons name="close" size={30} color="white" />
+                </TouchableOpacity>
+                <TouchableOpacity style={styles.captureButton} onPress={takePicture}>
+                  <View style={styles.captureButtonInner} />
+                </TouchableOpacity>
+              </View>
+            </CameraView>
+          )}
+        </SafeAreaView>
+      </Modal>
+
     </SafeAreaView>
   );
 }
@@ -160,6 +262,24 @@ const styles = StyleSheet.create({
   ratingText: { color: COLORS.accent, marginLeft: 5, fontWeight: '700' },
   priceTag: { ...TYPOGRAPHY.h2, color: COLORS.primary, marginBottom: 15 },
   description: { color: COLORS.textSecondary, fontSize: 14, lineHeight: 22 },
+  
+  // New Styles for Map and Camera
+  sectionTitle: { ...TYPOGRAPHY.h3, color: COLORS.text, marginBottom: 10 },
+  mapContainer: { backgroundColor: COLORS.surface, padding: 20, borderRadius: 20, marginBottom: 20, borderWidth: 1, borderColor: COLORS.glassBorder },
+  mapWrapper: { height: 200, borderRadius: 12, overflow: 'hidden' },
+  map: { flex: 1 },
+  cameraCard: { backgroundColor: COLORS.surface, padding: 20, borderRadius: 20, marginBottom: 20, borderWidth: 1, borderColor: COLORS.glassBorder, alignItems: 'center' },
+  openCameraButton: { alignItems: 'center', justifyContent: 'center', padding: 20, borderStyle: 'dashed', borderWidth: 2, borderColor: COLORS.primary, borderRadius: 12, width: '100%' },
+  openCameraText: { color: COLORS.primary, marginTop: 10, fontWeight: '700' },
+  photoContainer: { width: '100%', alignItems: 'center' },
+  previewPhoto: { width: '100%', height: 200, borderRadius: 12, marginBottom: 10 },
+  retakeButton: { flexDirection: 'row', backgroundColor: COLORS.accent, paddingHorizontal: 20, paddingVertical: 10, borderRadius: 8, alignItems: 'center' },
+  retakeText: { color: '#fff', marginLeft: 8, fontWeight: '700' },
+  cameraControls: { flex: 1, backgroundColor: 'transparent', flexDirection: 'column', justifyContent: 'space-between', padding: 20 },
+  closeCameraButton: { alignSelf: 'flex-start', marginTop: 20, padding: 10 },
+  captureButton: { alignSelf: 'center', marginBottom: 40, width: 70, height: 70, borderRadius: 35, backgroundColor: 'rgba(255, 255, 255, 0.3)', justifyContent: 'center', alignItems: 'center' },
+  captureButtonInner: { width: 50, height: 50, borderRadius: 25, backgroundColor: 'white' },
+
   securityCard: { backgroundColor: 'rgba(16, 185, 129, 0.05)', padding: 15, borderRadius: 15, borderWidth: 1, borderColor: 'rgba(16, 185, 129, 0.2)', marginBottom: 20 },
   securityHeader: { flexDirection: 'row', alignItems: 'center', marginBottom: 10 },
   securityTitle: { color: COLORS.success, fontWeight: '800', marginLeft: 10 },

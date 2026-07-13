@@ -24,8 +24,10 @@ export default function CatalogScreen() {
   const { width } = useWindowDimensions();
 
   const { numColumns, horizontalPadding } = useMemo(() => {
-    if (width > 900) return { numColumns: 2, horizontalPadding: width * 0.1 };
-    return { numColumns: 1, horizontalPadding: SPACING.lg };
+    if (width > 1200) return { numColumns: 4, horizontalPadding: width * 0.1 };
+    if (width > 900) return { numColumns: 3, horizontalPadding: width * 0.05 };
+    if (width > 600) return { numColumns: 2, horizontalPadding: SPACING.lg };
+    return { numColumns: 1, horizontalPadding: SPACING.md };
   }, [width]);
 
   const categories = useMemo(() => ['Semua', ...new Set(products.map((p) => p.category))], []);
