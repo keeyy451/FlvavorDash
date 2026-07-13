@@ -11,8 +11,9 @@ FlavorDash adalah aplikasi katalog makanan berbasis **React Native (Expo)** yang
 
 1. **Katalog Makanan** — Tampilan responsif menggunakan Flexbox dengan komponen `<View>`, `<Text>`, dan `<Image>`.
 2. **Detail Pesanan (Protected)** — Halaman yang dilindungi autentikasi JWT dengan middleware pipeline.
-3. **Fitur Kamera** — Mengambil foto sebagai bukti penerimaan pesanan menggunakan `expo-camera`.
-4. **Fitur Maps** — Menampilkan lokasi restoran dengan marker menggunakan `react-native-maps`.
+3. **Dual-Role Authentication** — Menggunakan dua role (`Customer` dan `Driver`) yang saling tersinkronisasi menggunakan Context API.
+4. **Fitur Kamera** — Mengambil foto sebagai bukti penerimaan pesanan (khusus Driver).
+5. **Fitur Maps** — Menampilkan lokasi restoran atau customer menggunakan `react-native-maps`.
 
 ---
 
@@ -45,10 +46,9 @@ npx expo start --clear
 - **Web**: Tekan tombol `w` di terminal (fitur Kamera dan Maps hanya tersedia di perangkat mobile).
 
 ### Akun Demo untuk Login
-```
-Email    : user@flavordash.com
-Password : password123
-```
+Aplikasi menyediakan tombol login cepat (Demo) untuk dua role:
+- **Demo Customer**: Untuk melihat katalog dan memesan makanan.
+- **Demo Driver**: Untuk melihat daftar pesanan aktif dan menyelesaikannya dengan foto bukti.
 
 ---
 

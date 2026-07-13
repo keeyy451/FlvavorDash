@@ -49,7 +49,7 @@ export default function ProductCard({ product, onPress }) {
             <View style={styles.footer}>
               <Text style={styles.priceText}>Rp {product.price?.toLocaleString()}</Text>
               <View style={styles.addButton}>
-                <Ionicons name="add" size={18} color={COLORS.text} />
+                <Ionicons name="add" size={18} color={'#FFFFFF'} />
               </View>
             </View>
           </View>
@@ -97,7 +97,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   categoryBadgeText: {
-    color: COLORS.text,
+    color: '#FFFFFF',
     fontSize: 8,
     fontWeight: '800',
     textTransform: 'uppercase',

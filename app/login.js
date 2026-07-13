@@ -47,15 +47,21 @@ export default function LoginScreen() {
     }
   };
 
-  const fillDemo = () => {
-    setEmail('user@flavordash.com');
+  const fillCustomerDemo = () => {
+    setEmail('customer@flavordash.com');
+    setPassword('password123');
+    setError('');
+  };
+
+  const fillDriverDemo = () => {
+    setEmail('driver@flavordash.com');
     setPassword('password123');
     setError('');
   };
 
   return (
     <SafeAreaView style={styles.container}>
-      <StatusBar barStyle="light-content" />
+      <StatusBar barStyle="dark-content" />
       <KeyboardAvoidingView
         behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
         style={{ flex: 1 }}
@@ -139,9 +145,15 @@ export default function LoginScreen() {
               )}
             </TouchableOpacity>
 
-            <TouchableOpacity style={styles.demoButton} onPress={fillDemo}>
-              <Text style={styles.demoButtonText}>Gunakan Akun Demo</Text>
-            </TouchableOpacity>
+            <View style={{ flexDirection: 'row', justifyContent: 'space-evenly', marginTop: SPACING.md }}>
+              <TouchableOpacity style={styles.demoButton} onPress={fillCustomerDemo}>
+                <Text style={styles.demoButtonText}>Demo Customer</Text>
+              </TouchableOpacity>
+
+              <TouchableOpacity style={styles.demoButton} onPress={fillDriverDemo}>
+                <Text style={styles.demoButtonText}>Demo Driver</Text>
+              </TouchableOpacity>
+            </View>
           </View>
         </ScrollView>
       </KeyboardAvoidingView>
@@ -167,7 +179,7 @@ const styles = StyleSheet.create({
   inputIcon: { marginRight: 12 },
   input: { flex: 1, color: COLORS.text, fontSize: 15, fontWeight: '600' },
   loginButton: { backgroundColor: COLORS.primary, height: 56, borderRadius: RADIUS.md, justifyContent: 'center', alignItems: 'center', marginTop: SPACING.lg, ...SHADOWS.medium },
-  loginButtonText: { color: COLORS.text, fontSize: 16, fontWeight: '900', letterSpacing: 0.5 },
-  demoButton: { marginTop: SPACING.md, paddingVertical: 12, alignItems: 'center' },
+  loginButtonText: { color: '#FFFFFF', fontSize: 16, fontWeight: '900', letterSpacing: 0.5 },
+  demoButton: { paddingVertical: 12, alignItems: 'center' },
   demoButtonText: { color: COLORS.primaryLight, fontSize: 14, fontWeight: '700', textDecorationLine: 'underline' },
 });

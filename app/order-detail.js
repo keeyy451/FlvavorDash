@@ -17,7 +17,7 @@ import MapView, { Marker } from 'react-native-maps';
 function OrderDetailContent() {
   const router = useRouter();
   const params = useLocalSearchParams();
-  const { user, token } = useAuth();
+  const { user, token, placeOrder, completeOrder } = useAuth();
   const [quantity, setQuantity] = useState(1);
   const { width } = useWindowDimensions();
 
@@ -62,16 +62,26 @@ function OrderDetailContent() {
   };
 
   const confirmOrder = () => {
-    if (!photoUri) {
-      Alert.alert("Perhatian", "Harap ambil foto bukti penerimaan pesanan terlebih dahulu.");
-      return;
+    if (user?.role === 'driver') {
+      if (!photoUri) {
+        Alert.alert("Perhatian", "Harap ambil foto bukti penerimaan pesanan terlebih dahulu.");
+        return;
+      }
+      // Selesaikan pesanan di context jika ada orderId
+      if (params.orderId) {
+        completeOrder(params.orderId);
+      }
+      setOrderConfirmed(true);
+    } else {
+      // Customer pesan makanan
+      placeOrder(product, user.name);
+      setOrderConfirmed(true);
     }
-    setOrderConfirmed(true);
   };
 
   return (
     <SafeAreaView style={styles.container}>
-      <StatusBar barStyle="light-content" />
+      <StatusBar barStyle="dark-content" />
       <ScrollView showsVerticalScrollIndicator={false} contentContainerStyle={[styles.scrollContent, isWeb && styles.webScrollContent]}>
         
         {/* Header */}
@@ -102,7 +112,9 @@ function OrderDetailContent() {
 
             {/* Map View */}
             <View style={styles.mapContainer}>
-              <Text style={styles.sectionTitle}>Lokasi Restoran</Text>
+              <Text style={styles.sectionTitle}>
+                {user?.role === 'driver' ? 'Lokasi Pengiriman (Customer)' : 'Lokasi Restoran'}
+              </Text>
               <View style={styles.mapWrapper}>
                 {Platform.OS === 'web' ? (
                   <View style={[styles.map, { justifyContent: 'center', alignItems: 'center', backgroundColor: COLORS.surface }]}>
@@ -127,24 +139,26 @@ function OrderDetailContent() {
           </View>
 
           <View style={isWeb ? styles.sideColumn : null}>
-            {/* Camera / Proof Section */}
-            <View style={styles.cameraCard}>
-              <Text style={styles.sectionTitle}>Bukti Penerimaan</Text>
-              {photoUri ? (
-                <View style={styles.photoContainer}>
-                  <Image source={{ uri: photoUri }} style={styles.previewPhoto} />
-                  <TouchableOpacity style={styles.retakeButton} onPress={handleOpenCamera}>
-                    <Ionicons name="camera-reverse" size={20} color="#fff" />
-                    <Text style={styles.retakeText}>Ambil Ulang</Text>
+            {/* Camera / Proof Section (Hanya untuk Driver) */}
+            {user?.role === 'driver' && (
+              <View style={styles.cameraCard}>
+                <Text style={styles.sectionTitle}>Bukti Penerimaan</Text>
+                {photoUri ? (
+                  <View style={styles.photoContainer}>
+                    <Image source={{ uri: photoUri }} style={styles.previewPhoto} />
+                    <TouchableOpacity style={styles.retakeButton} onPress={handleOpenCamera}>
+                      <Ionicons name="camera-reverse" size={20} color="#fff" />
+                      <Text style={styles.retakeText}>Ambil Ulang</Text>
+                    </TouchableOpacity>
+                  </View>
+                ) : (
+                  <TouchableOpacity style={styles.openCameraButton} onPress={handleOpenCamera}>
+                    <Ionicons name="camera" size={32} color={COLORS.primary} />
+                    <Text style={styles.openCameraText}>Ambil Foto Bukti</Text>
                   </TouchableOpacity>
-                </View>
-              ) : (
-                <TouchableOpacity style={styles.openCameraButton} onPress={handleOpenCamera}>
-                  <Ionicons name="camera" size={32} color={COLORS.primary} />
-                  <Text style={styles.openCameraText}>Ambil Foto Bukti</Text>
-                </TouchableOpacity>
-              )}
-            </View>
+                )}
+              </View>
+            )}
 
             {/* Security / Middleware Section */}
             <View style={styles.securityCard}>
@@ -175,7 +189,9 @@ function OrderDetailContent() {
                 style={styles.confirmButton}
                 onPress={confirmOrder}
               >
-                <Text style={styles.confirmButtonText}>Konfirmasi Pesanan</Text>
+                <Text style={styles.confirmButtonText}>
+                  {user?.role === 'driver' ? 'Selesaikan Pengiriman' : 'Pesan Sekarang'}
+                </Text>
               </TouchableOpacity>
             </View>
           </View>
@@ -215,9 +231,14 @@ function OrderDetailContent() {
             <View style={styles.successIconCircle}>
               <Ionicons name="checkmark-circle" size={80} color={COLORS.success} />
             </View>
-            <Text style={styles.successTitle}>Pesanan Berhasil!</Text>
+            <Text style={styles.successTitle}>
+              {user?.role === 'driver' ? 'Pengiriman Selesai!' : 'Pesanan Berhasil!'}
+            </Text>
             <Text style={styles.successSubtitle}>
-              Terima kasih, {user?.name}. Pesanan {product.name} Anda sedang diproses dan akan segera diantar.
+              {user?.role === 'driver'
+                ? `Terima kasih, ${user?.name}. Bukti penerimaan untuk ${product.name} telah disimpan.`
+                : `Terima kasih, ${user?.name}. Pesanan ${product.name} Anda sedang diproses dan akan segera diantar.`
+              }
             </Text>
             <View style={styles.successDetails}>
               <View style={styles.successRow}>
@@ -304,7 +325,7 @@ const styles = StyleSheet.create({
   totalLabel: { ...TYPOGRAPHY.h3, color: COLORS.text },
   totalValue: { ...TYPOGRAPHY.h2, color: COLORS.primary },
   confirmButton: { backgroundColor: COLORS.primary, height: 50, borderRadius: 12, justifyContent: 'center', alignItems: 'center' },
-  confirmButtonText: { color: COLORS.text, fontWeight: '900', fontSize: 16 },
+  confirmButtonText: { color: '#FFFFFF', fontWeight: '900', fontSize: 16 },
 
   // Success Modal Styles
   successModalOverlay: { flex: 1, backgroundColor: 'rgba(0,0,0,0.8)', justifyContent: 'center', alignItems: 'center', padding: 20 },
@@ -312,10 +333,10 @@ const styles = StyleSheet.create({
   successIconCircle: { width: 100, height: 100, borderRadius: 50, backgroundColor: 'rgba(16, 185, 129, 0.1)', justifyContent: 'center', alignItems: 'center', marginBottom: 20 },
   successTitle: { ...TYPOGRAPHY.h2, color: COLORS.success, marginBottom: 10, textAlign: 'center' },
   successSubtitle: { color: COLORS.textSecondary, fontSize: 14, textAlign: 'center', lineHeight: 22, marginBottom: 30 },
-  successDetails: { width: '100%', backgroundColor: 'rgba(255,255,255,0.03)', borderRadius: 12, padding: 15, marginBottom: 30 },
+  successDetails: { width: '100%', backgroundColor: 'rgba(0,0,0,0.03)', borderRadius: 12, padding: 15, marginBottom: 30 },
   successRow: { flexDirection: 'row', justifyContent: 'space-between', marginBottom: 10 },
   successLabel: { color: COLORS.textSecondary, fontSize: 13 },
   successValue: { color: COLORS.text, fontSize: 14, fontWeight: '700' },
   backHomeButton: { backgroundColor: COLORS.primary, width: '100%', padding: 16, borderRadius: 12, alignItems: 'center' },
-  backHomeButtonText: { color: COLORS.text, fontSize: 16, fontWeight: '800' }
+  backHomeButtonText: { color: '#FFFFFF', fontSize: 16, fontWeight: '800' }
 });

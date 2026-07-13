@@ -2,7 +2,7 @@
  * products.js
  * ============================================================
  * Data katalog produk FlavorDash.
- * Menggunakan gambar dari Unsplash untuk demo.
+ * Menggunakan gambar dari Unsplash yang sudah diverifikasi (100% Aktif).
  * ============================================================
  */
 
@@ -50,7 +50,7 @@ const products = [
     price: 45000,
     rating: 5.0,
     category: 'Makanan Utama',
-    image: 'https://images.unsplash.com/photo-1606491956689-2ea866880049?auto=format&fit=crop&w=400&q=80',
+    image: 'https://images.unsplash.com/photo-1504674900247-0877df9cc836?auto=format&fit=crop&w=400&q=80',
   },
   {
     id: '6',
@@ -59,7 +59,7 @@ const products = [
     price: 18000,
     rating: 4.6,
     category: 'Minuman',
-    image: 'https://images.unsplash.com/photo-1461023058943-07cb1ce8dbb3?auto=format&fit=crop&w=400&q=80',
+    image: 'https://images.unsplash.com/photo-1497935586351-b67a49e012bf?auto=format&fit=crop&w=400&q=80',
   },
   {
     id: '7',

@@ -19,7 +19,7 @@ import { COLORS, SPACING, RADIUS, SHADOWS, TYPOGRAPHY } from '../constants/Theme
 
 export default function CatalogScreen() {
   const router = useRouter();
-  const { isAuthenticated, logout } = useAuth();
+  const { isAuthenticated, logout, user, orders } = useAuth();
   const [selectedCategory, setSelectedCategory] = useState('Semua');
   const { width } = useWindowDimensions();
 
@@ -66,10 +66,12 @@ export default function CatalogScreen() {
           <Ionicons 
             name={isAuthenticated ? "log-out-outline" : "person-outline"} 
             size={18} 
-            color={COLORS.text} 
+            color={isAuthenticated ? COLORS.error : '#FFFFFF'} 
             style={{ marginRight: 6 }}
           />
-          <Text style={styles.authButtonText}>{isAuthenticated ? 'Logout' : 'Login'}</Text>
+          <Text style={[styles.authButtonText, isAuthenticated && { color: COLORS.error }]}>
+            {isAuthenticated ? 'Logout' : 'Login'}
+          </Text>
         </TouchableOpacity>
       </View>
 
@@ -110,9 +112,75 @@ export default function CatalogScreen() {
     </View>
   );
 
+  // ============================================================
+  // TAMPILAN KHUSUS DRIVER
+  // ============================================================
+  if (user?.role === 'driver') {
+    return (
+      <SafeAreaView style={styles.container}>
+        <StatusBar barStyle="dark-content" />
+        <View style={styles.headerContainer}>
+          <View style={styles.topBar}>
+            <View style={styles.brandContainer}>
+              <View style={styles.logoCircle}>
+                <Ionicons name="bicycle" size={24} color={COLORS.primary} />
+              </View>
+              <View>
+                <Text style={styles.brandName}>Driver Dashboard</Text>
+                <Text style={styles.locationText}>{user.name}</Text>
+              </View>
+            </View>
+            <TouchableOpacity style={[styles.authButton, styles.logoutButton]} onPress={logout}>
+              <Ionicons name="log-out-outline" size={18} color={COLORS.error} style={{ marginRight: 6 }} />
+              <Text style={[styles.authButtonText, { color: COLORS.error }]}>Logout</Text>
+            </TouchableOpacity>
+          </View>
+          
+          <Text style={[TYPOGRAPHY.h3, { paddingHorizontal: SPACING.md, marginBottom: SPACING.md, color: COLORS.text }]}>
+            Pesanan Aktif ({orders.length})
+          </Text>
+        </View>
+
+        <FlatList
+          data={orders}
+          keyExtractor={(item) => item.id}
+          renderItem={({ item }) => (
+            <TouchableOpacity 
+              style={styles.deliveryCard}
+              onPress={() => router.push({
+                pathname: '/order-detail',
+                params: { orderId: item.id, productId: item.product.id },
+              })}
+            >
+              <View style={styles.deliveryIconCircle}>
+                <Ionicons name="cube-outline" size={24} color={COLORS.primary} />
+              </View>
+              <View style={styles.deliveryInfo}>
+                <Text style={styles.deliveryTitle}>Order #{item.id.slice(-4)}</Text>
+                <Text style={styles.deliverySubtitle}>1x {item.product.name}</Text>
+                <Text style={styles.deliveryDest}>Pemesan: {item.customerName}</Text>
+              </View>
+              <Ionicons name="chevron-forward" size={24} color={COLORS.textMuted} />
+            </TouchableOpacity>
+          )}
+          contentContainerStyle={{ paddingHorizontal: SPACING.md }}
+          ListEmptyComponent={
+            <View style={{ alignItems: 'center', marginTop: 80 }}>
+              <Ionicons name="receipt-outline" size={64} color={COLORS.glassBorder} />
+              <Text style={{ color: COLORS.textMuted, marginTop: 16, fontSize: 16 }}>Belum ada pesanan masuk</Text>
+            </View>
+          }
+        />
+      </SafeAreaView>
+    );
+  }
+
+  // ============================================================
+  // TAMPILAN KHUSUS CUSTOMER / GUEST
+  // ============================================================
   return (
     <SafeAreaView style={styles.container}>
-      <StatusBar barStyle="light-content" />
+      <StatusBar barStyle="dark-content" />
       <FlatList
         key={`${numColumns}`}
         numColumns={numColumns}
@@ -147,16 +215,24 @@ const styles = StyleSheet.create({
   authButton: { flexDirection: 'row', alignItems: 'center', paddingHorizontal: 16, paddingVertical: 10, borderRadius: RADIUS.lg },
   loginButton: { backgroundColor: COLORS.primary },
   logoutButton: { backgroundColor: COLORS.surface, borderWidth: 1, borderColor: COLORS.glassBorder },
-  authButtonText: { color: COLORS.text, fontSize: 14, fontWeight: '700' },
+  authButtonText: { color: '#FFFFFF', fontSize: 14, fontWeight: '700' },
   heroWrapper: { marginBottom: SPACING.lg },
   heroBackground: { height: 160, overflow: 'hidden', borderRadius: RADIUS.lg },
   heroOverlay: { flex: 1, backgroundColor: 'rgba(0,0,0,0.5)', padding: SPACING.lg, justifyContent: 'center' },
-  heroTitle: { ...TYPOGRAPHY.h2, color: COLORS.text },
+  heroTitle: { ...TYPOGRAPHY.h2, color: '#FFFFFF' },
   promoBadge: { flexDirection: 'row', alignItems: 'center', marginTop: 8, backgroundColor: 'rgba(0,0,0,0.3)', alignSelf: 'flex-start', paddingHorizontal: 8, paddingVertical: 4, borderRadius: 4 },
   promoText: { color: COLORS.accent, fontSize: 10, fontWeight: '700', marginLeft: 4 },
   categoryWrapper: { marginBottom: SPACING.sm },
   categoryChip: { paddingHorizontal: 20, paddingVertical: 10, borderRadius: RADIUS.md, backgroundColor: COLORS.surface, marginRight: 10, borderWidth: 1, borderColor: COLORS.glassBorder },
   categoryChipActive: { backgroundColor: COLORS.primary, borderColor: COLORS.primary },
   categoryChipText: { color: COLORS.textSecondary, fontSize: 13, fontWeight: '700' },
-  categoryChipTextActive: { color: COLORS.text },
+  categoryChipTextActive: { color: '#FFFFFF' },
+  
+  // Driver Styles
+  deliveryCard: { flexDirection: 'row', alignItems: 'center', backgroundColor: COLORS.surface, padding: SPACING.md, borderRadius: RADIUS.md, marginBottom: SPACING.md, borderWidth: 1, borderColor: COLORS.glassBorder, ...SHADOWS.small },
+  deliveryIconCircle: { width: 48, height: 48, borderRadius: 24, backgroundColor: 'rgba(255, 90, 95, 0.1)', justifyContent: 'center', alignItems: 'center', marginRight: SPACING.md },
+  deliveryInfo: { flex: 1 },
+  deliveryTitle: { color: COLORS.text, fontSize: 16, fontWeight: '700', marginBottom: 2 },
+  deliverySubtitle: { color: COLORS.textSecondary, fontSize: 14, marginBottom: 4 },
+  deliveryDest: { color: COLORS.primary, fontSize: 12, fontWeight: '600' },
 });

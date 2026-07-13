@@ -124,6 +124,7 @@ function generateMockJWT(user) {
     sub: user.id,                              // Subject (user ID)
     name: user.name,                           // Nama user
     email: user.email,                         // Email user
+    role: user.role,                           // Peran (Customer/Driver)
     iat: Math.floor(Date.now() / 1000),        // Issued At (sekarang)
     exp: Math.floor(Date.now() / 1000) + 3600, // Expires in 1 jam
   };
@@ -151,6 +152,7 @@ export function AuthProvider({ children }) {
   const [token, setToken] = useState(null);
   const [user, setUser] = useState(null);
   const [isLoading, setIsLoading] = useState(true);
+  const [orders, setOrders] = useState([]); // Global state untuk sinkronisasi pesanan
 
   // ============================================================
   // AUTO-LOGIN: Cek token saat app pertama kali dimuat
@@ -176,6 +178,7 @@ export function AuthProvider({ children }) {
                 id: payload.sub,
                 name: payload.name,
                 email: payload.email,
+                role: payload.role,
               });
             } else {
               // Token expired → hapus dan force logout
@@ -207,13 +210,15 @@ export function AuthProvider({ children }) {
   // ============================================================
   const login = async (email, password) => {
     // Simulasi validasi credentials (di produksi: API call)
-    if (email === 'user@flavordash.com' && password === 'password123') {
-      const userData = {
-        id: 'usr_001',
-        name: 'John Doe',
-        email: email,
-      };
+    let userData = null;
 
+    if (email === 'customer@flavordash.com' && password === 'password123') {
+      userData = { id: 'usr_001', name: 'Budi (Customer)', email: email, role: 'customer' };
+    } else if (email === 'driver@flavordash.com' && password === 'password123') {
+      userData = { id: 'drv_001', name: 'Agus (Driver)', email: email, role: 'driver' };
+    }
+
+    if (userData) {
       // Generate JWT token (di produksi: server generate ini)
       const jwtToken = generateMockJWT(userData);
 
@@ -252,6 +257,23 @@ export function AuthProvider({ children }) {
   };
 
   // ============================================================
+  // ORDER MANAGEMENT (Sinkronisasi Customer -> Driver)
+  // ============================================================
+  const placeOrder = (product, customerName) => {
+    const newOrder = {
+      id: Date.now().toString(),
+      product,
+      customerName,
+      status: 'pending'
+    };
+    setOrders((prev) => [newOrder, ...prev]);
+  };
+
+  const completeOrder = (orderId) => {
+    setOrders((prev) => prev.filter(o => o.id !== orderId));
+  };
+
+  // ============================================================
   // COMPUTED STATE
   // isAuthenticated = true hanya jika ada token DAN user data
   // ============================================================
@@ -266,6 +288,9 @@ export function AuthProvider({ children }) {
         isAuthenticated, // true jika token valid & user ada
         login,         // Fungsi login(email, password)
         logout,        // Fungsi logout()
+        orders,        // Daftar pesanan aktif
+        placeOrder,    // Fungsi tambah pesanan (Customer)
+        completeOrder, // Fungsi selesaikan pesanan (Driver)
       }}
     >
       {children}

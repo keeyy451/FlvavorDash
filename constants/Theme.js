@@ -1,36 +1,36 @@
 /**
  * constants/Theme.js
- * Premium design tokens for FlavorDash
+ * Clean Light Mode design tokens for FlavorDash
  */
 
 export const COLORS = {
-  // Primary Palette (Vibrant Red-Orange)
-  primary: '#FF385C',
+  // Primary Palette (Vibrant Orange/Red for Food Appetite)
+  primary: '#FF5A5F',
   primaryDark: '#E31C5F',
-  primaryLight: '#FF5A5F',
+  primaryLight: '#FF8A8E',
   
-  // Backgrounds (Deep Navy/Indigo)
-  background: '#0B0D17',
-  surface: '#161B2E',
-  surfaceLight: '#1F2642',
+  // Backgrounds (Clean White/Off-White)
+  background: '#F8FAFC',  // Slate 50
+  surface: '#FFFFFF',     // White
+  surfaceLight: '#F1F5F9',// Slate 100
   
   // Text Colors
-  text: '#FFFFFF',
-  textSecondary: '#94A3B8',
-  textMuted: '#64748B',
+  text: '#0F172A',        // Slate 900
+  textSecondary: '#475569',// Slate 600
+  textMuted: '#94A3B8',   // Slate 400
   
   // Accents
-  accent: '#FFD700', // Gold for ratings
+  accent: '#F59E0B',      // Warm Gold for ratings
   success: '#10B981',
   error: '#EF4444',
   warning: '#F59E0B',
   info: '#3B82F6',
   
-  // Overlays & Glass
-  overlay: 'rgba(0, 0, 0, 0.6)',
-  glass: 'rgba(255, 255, 255, 0.04)',
-  glassBorder: 'rgba(255, 255, 255, 0.12)',
-  cardGradient: ['#161B2E', '#0B0D17'],
+  // Overlays & Borders
+  overlay: 'rgba(0, 0, 0, 0.4)',
+  glass: 'rgba(255, 255, 255, 0.8)',
+  glassBorder: '#E2E8F0', // Slate 200
+  cardGradient: ['#FFFFFF', '#F8FAFC'],
 };
 
 export const SPACING = {
@@ -53,24 +53,24 @@ export const RADIUS = {
 
 export const SHADOWS = {
   small: {
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.2,
-    shadowRadius: 4,
+    shadowColor: '#64748B',
+    shadowOffset: { width: 0, height: 4 },
+    shadowOpacity: 0.08,
+    shadowRadius: 8,
     elevation: 3,
   },
   medium: {
-    shadowColor: '#000',
+    shadowColor: '#64748B',
     shadowOffset: { width: 0, height: 8 },
-    shadowOpacity: 0.3,
-    shadowRadius: 12,
+    shadowOpacity: 0.12,
+    shadowRadius: 16,
     elevation: 8,
   },
   large: {
     shadowColor: COLORS.primary,
     shadowOffset: { width: 0, height: 12 },
-    shadowOpacity: 0.25,
-    shadowRadius: 20,
+    shadowOpacity: 0.2,
+    shadowRadius: 24,
     elevation: 15,
   },
 };
